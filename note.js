@@ -48,7 +48,11 @@ RemoteStorage.defineModule('notes', function (privateClient, publicClient) {
             },
             
             update: function (note) {
-                return privateClient.storeObject('note', note.id, note);
+                return privateClient.getObject(note.id).then(function (serverNote) {
+                    serverNote.title = note.title;
+                    serverNote.content = note.content;
+                    return privateClient.storeObject('note', serverNote.id, serverNote);
+                });
             },
             
             remove: function (id) {

@@ -2,15 +2,29 @@
 (function () {
     "use strict";
     
+    function delay(fn, tm, scope) {
+        var ret = function () {
+            if (ret.$timerId) {
+                window.clearTimeout(ret.$timerId);
+            }
+            ret.$timerId = window.setTimeout(fn, tm, scope || this);
+        };
+        
+        return ret;
+    }
+    
     var NoteStore, view;
     NoteStore = remoteStorage.notes;
     
     view = {
         init: function () {
-            var me = this;
+            var me = this,
+                noteTitle,
+                noteContent;
+            
             this.list = document.getElementById("noteslist");
-            this.noteTitle = document.getElementById("notetitle");
-            this.noteContent = document.getElementById("notecontent");
+            noteTitle = this.noteTitle = document.getElementById("notetitle");
+            noteContent = this.noteContent = document.getElementById("notecontent");
             
             document.getElementById("action-add").addEventListener('click', function () {
                 NoteStore.add("New Note", "");
@@ -26,23 +40,23 @@
                 }
             }, false);
 
-            this.noteTitle.addEventListener("keyup", function () {
+            this.noteTitle.addEventListener("keyup", delay(function () {
                 if (!me.currentNote) {
                     return;
                 }
                 
-                me.currentNote.title = this.value;
+                me.currentNote.title = noteTitle.value;
                 NoteStore.update(me.currentNote);
-            }, false);
+            }, 500), false);
 
-            this.noteContent.addEventListener("keyup", function () {
+            this.noteContent.addEventListener("keyup", delay(function () {
                 if (!me.currentNote) {
                     return;
                 }
                 
-                me.currentNote.content = this.value;
+                me.currentNote.content = noteContent.value;
                 NoteStore.update(me.currentNote);
-            }, false);
+            }, 500), false);
         },
 
         add: function (note) {
@@ -74,7 +88,7 @@
         update: function (note) {
             var dom = document.getElementById(note.id);
             if (dom) {
-                dom.innerHTML = note.title;
+                dom.childNodes[0].innerHTML = note.title;
             }
         },
         
