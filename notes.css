@@ -101,10 +101,13 @@ html,body {
     border: 0;
     right: 0;
     line-height: 48px;
+    height: 48px;
+    vertical-align: middle;
     width: 99%;
     
     font-family: sans-serif;
     font-size: 110%;
+    background: transparent;
 }
 
 #notecontent {
@@ -118,4 +121,5 @@ html,body {
     
     font-family: sans-serif;
     font-size: 100%;
+    background: transparent;
 }
